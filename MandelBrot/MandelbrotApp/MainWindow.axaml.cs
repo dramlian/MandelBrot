@@ -16,7 +16,7 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
-        coordinatesGiver = new CanvasCoordinatesGiver(CanvasSize);
+        coordinatesGiver = new CanvasCoordinatesGiver(CanvasSize, 8, 8.0 / CanvasSize, CanvasSize / 2, CanvasSize / 2);
         InitializeComponent();
         SetupCanvas();
     }

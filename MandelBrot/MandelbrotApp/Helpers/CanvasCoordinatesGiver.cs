@@ -6,20 +6,20 @@ class CanvasCoordinatesGiver
 {
     public double Offset { get; set; }
     public double Precision { get; set; }
-    public int MiddleCoordinate { get; set; }
-    public (int, int)[,] Coordinates { get; }
-    public CanvasCoordinatesGiver(int size)
+    public int MiddleCoordinateX { get; set; }
+    public int MiddleCoordinateY { get; set; }
+    public CanvasCoordinatesGiver(int size, double offset, double precision, int middleCoordinateX, int middleCoordinateY)
     {
-        Coordinates = new (int, int)[size, size];
-        Offset = 8; // The range of the Mandelbrot set to consider
-        Precision = Offset / size;
-        MiddleCoordinate = size / 2;
+        Offset = offset;
+        Precision = precision;
+        MiddleCoordinateX = middleCoordinateX;
+        MiddleCoordinateY = middleCoordinateY;
     }
 
     public bool ShouldColorPixel(int x, int y)
     {
-        double MandelXEquivalent = (x - MiddleCoordinate) * Precision;
-        double MandelYEquivalent = (y - MiddleCoordinate) * Precision;
+        double MandelXEquivalent = (x - MiddleCoordinateX) * Precision;
+        double MandelYEquivalent = (y - MiddleCoordinateY) * Precision;
         return IsInMandelbrotSet(MandelXEquivalent, MandelYEquivalent);
     }
     
