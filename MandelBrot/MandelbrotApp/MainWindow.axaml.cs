@@ -3,6 +3,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia;
+using Avalonia.Input;
 
 namespace MandelbrotApp;
 
@@ -12,13 +13,27 @@ public partial class MainWindow : Window
     private WriteableBitmap bitmap = null!;
     private const int CanvasSize = 1000;
 
+    private double Offset;
+    private double Precision;
+    private int MiddleCoordinateX;
+    private int MiddleCoordinateY;
+
     private CanvasCoordinatesGiver coordinatesGiver;
 
     public MainWindow()
     {
-        coordinatesGiver = new CanvasCoordinatesGiver(CanvasSize, 8, 8.0 / CanvasSize, CanvasSize / 2, CanvasSize / 2);
+        Offset = 8;
+        Precision = Offset / CanvasSize;
+        MiddleCoordinateX = CanvasSize / 2;
+        MiddleCoordinateY = CanvasSize / 2;
+        coordinatesGiver = new CanvasCoordinatesGiver(CanvasSize, Offset, Precision, MiddleCoordinateX, MiddleCoordinateY);
         InitializeComponent();
         SetupCanvas();
+        
+        // Enable keyboard events
+        this.KeyDown += OnKeyDown;
+        this.Focusable = true;
+        this.Focus();
     }
 
     private void SetupCanvas()
@@ -68,6 +83,57 @@ public partial class MainWindow : Window
             // Copy the buffer to the bitmap
             System.Runtime.InteropServices.Marshal.Copy(buffer, 0, lockedBitmap.Address, buffer.Length);
         }
+        
+        // Invalidate the bitmap to force a redraw
+        imageControl.Source = null;
+        imageControl.Source = bitmap;
+    }
+
+    private void OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        bool shouldUpdate = false;
+
+        switch (e.Key)
+        {
+            case Key.Up:
+                MiddleCoordinateY -= 150;
+                shouldUpdate = true;
+                break;
+            case Key.Down:
+                MiddleCoordinateY += 150;
+                shouldUpdate = true;
+                break;
+            case Key.Left:
+                MiddleCoordinateX -= 150;
+                shouldUpdate = true;
+                break;
+            case Key.Right:
+                MiddleCoordinateX += 150;
+                shouldUpdate = true;
+                break;
+            case Key.Space:
+                Offset -= 0.5;
+                if (Offset <= 0) Offset = 0.1; // Prevent offset from becoming zero or negative
+                Precision = Offset / CanvasSize;
+                shouldUpdate = true;
+                break;
+        }
+
+        if (shouldUpdate)
+        {
+            UpdateCoordinatesGiver();
+            DrawPixels();
+            // Force the image to refresh
+            imageControl.InvalidateVisual();
+        }
+    }
+
+    private void UpdateCoordinatesGiver()
+    {
+        coordinatesGiver.MiddleCoordinateX = MiddleCoordinateX;
+        coordinatesGiver.MiddleCoordinateY = MiddleCoordinateY;
+        coordinatesGiver.Offset = Offset;
+        coordinatesGiver.Precision = Precision;
     }
 }              
 
