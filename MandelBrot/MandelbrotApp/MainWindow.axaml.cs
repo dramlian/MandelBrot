@@ -10,8 +10,7 @@ public partial class MainWindow : Window
 {
     private Image imageControl = null!;
     private WriteableBitmap bitmap = null!;
-    private const int CanvasSize = 1000;
-
+    private readonly int CanvasSize;
     private double Offset;
     private double Precision;
     private int MiddleCoordinateX;
@@ -20,6 +19,7 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
+        CanvasSize = 1000;
         Offset = 8;
         Precision = Offset / CanvasSize;
         MiddleCoordinateX = CanvasSize / 2;
