@@ -20,10 +20,20 @@ class CanvasCoordinatesGiver
     {
         double MandelXEquivalent = (x - MiddleCoordinateX) * Precision;
         double MandelYEquivalent = (y - MiddleCoordinateY) * Precision;
-        return IsInMandelbrotSet(MandelXEquivalent, MandelYEquivalent);
+        int maxIterations = GetAdaptiveMaxIterations();
+        return IsInMandelbrotSet(MandelXEquivalent, MandelYEquivalent, maxIterations);
+    }
+
+    private int GetAdaptiveMaxIterations()
+    {
+        if (Precision > 0.01) return 50; 
+        else if (Precision > 0.001) return 100; 
+        else if (Precision > 0.0001) return 200; 
+        else if (Precision > 0.00001) return 300; 
+        else return 400;      
     }
     
-    bool IsInMandelbrotSet(double x, double y, int maxIterations = 1000)
+    bool IsInMandelbrotSet(double x, double y, int maxIterations)
     {
         double zx = 0;
         double zy = 0;

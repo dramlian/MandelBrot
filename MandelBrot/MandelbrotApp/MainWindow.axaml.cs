@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia;
@@ -17,7 +16,6 @@ public partial class MainWindow : Window
     private double Precision;
     private int MiddleCoordinateX;
     private int MiddleCoordinateY;
-
     private CanvasCoordinatesGiver coordinatesGiver;
 
     public MainWindow()
@@ -30,7 +28,6 @@ public partial class MainWindow : Window
         InitializeComponent();
         SetupCanvas();
         
-        // Enable keyboard events
         this.KeyDown += OnKeyDown;
         this.Focusable = true;
         this.Focus();
@@ -38,21 +35,16 @@ public partial class MainWindow : Window
 
     private void SetupCanvas()
     {
-        // Create a WriteableBitmap for efficient pixel manipulation
         bitmap = new WriteableBitmap(new PixelSize(CanvasSize, CanvasSize), new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Premul);
         
-        // Create an Image control to display the bitmap
         imageControl = new Image
         {
             Width = CanvasSize,
             Height = CanvasSize,
             Source = bitmap
         };
-
-        // Set the image as the content of the window
         Content = imageControl;
 
-        // Draw pixels efficiently
         DrawPixels();
     }
 
@@ -60,7 +52,7 @@ public partial class MainWindow : Window
     {
         using (var lockedBitmap = bitmap.Lock())
         {
-            var buffer = new byte[CanvasSize * CanvasSize * 4]; // 4 bytes per pixel (BGRA)
+            var buffer = new byte[CanvasSize * CanvasSize * 4];
             
             for (int y = 0; y < CanvasSize; y++)
             {
@@ -70,21 +62,17 @@ public partial class MainWindow : Window
 
                     if (coordinatesGiver.ShouldColorPixel(x, y))
                     {
-                        // Set pixel to red
-                        buffer[index] = 0;     // Blue
-                        buffer[index + 1] = 0; // Green
-                        buffer[index + 2] = 255; // Red
-                        buffer[index + 3] = 255; // Alpha
+                        buffer[index] = 0;   
+                        buffer[index + 1] = 0; 
+                        buffer[index + 2] = 255;
+                        buffer[index + 3] = 255; 
                     }
-                    // If not coloring, leave as default (0,0,0,0) which is transparent/black
                 }
             }
             
-            // Copy the buffer to the bitmap
             System.Runtime.InteropServices.Marshal.Copy(buffer, 0, lockedBitmap.Address, buffer.Length);
         }
         
-        // Invalidate the bitmap to force a redraw
         imageControl.Source = null;
         imageControl.Source = bitmap;
     }
@@ -113,7 +101,7 @@ public partial class MainWindow : Window
                 break;
             case Key.Space:
                 Offset -= 0.5;
-                if (Offset <= 0) Offset = 0.1; // Prevent offset from becoming zero or negative
+                if (Offset <= 0) Offset = 0.1;
                 Precision = Offset / CanvasSize;
                 shouldUpdate = true;
                 break;
