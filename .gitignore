@@ -1,0 +1,46 @@
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]ogs/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# NuGet packages
+*.nupkg
+**/packages/*
+!**/packages/build/
+!**/packages/repositories.config
+
+# dotnet CLI
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET stuff
+wwwroot/
+*.db
+*.log
+
+# Entity Framework
+Migrations/
+
+# Publish output
+publish/
+
+# Others
+*.DS_Store
+*.swp
+*.bak
+*.tmp
+*.orig
